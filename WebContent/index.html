@@ -1,0 +1,117 @@
+<!-- HTML for static distribution bundle build -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Swagger UI</title>
+    <link rel="stylesheet" type="text/css" href="./swagger-ui.css" >
+    
+    <link rel="icon" href="https://cdn2.coppel.com/wcsstore/AuroraStorefrontAssetStore/images/icon-favicon.ico">
+          <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+
+    <style>
+      html
+      {
+        box-sizing: border-box;
+        overflow: -moz-scrollbars-vertical;
+        overflow-y: scroll;
+      }
+
+      *,
+      *:before,
+      *:after
+      {
+        box-sizing: inherit;
+      }
+
+      body
+      {
+        margin:0;
+        background: #fafafa;
+      }
+    </style>
+  </head>
+
+  <body>
+<div id="dialog" title="Servicio Soap"></div>
+    <div id="swagger-ui"></div>
+    <script src="./swagger-ui-bundle.js"> </script>
+    <script src="./swagger-ui-standalone-preset.js"> </script>
+    <script src="./jquery-3.5.1.min.js"> </script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+    var servicioWsdl = '<hgroup class="main"> '+
+      	'<pre class="base-url">[ Base URL WSDL: Servicio Wsdl ]</pre>'+
+		'<a target="_blank" disabled href="'+window.location.href+'servicio/soap?wsdl" rel="noopener noreferrer" style="cursor: pointer;"">'+window.location.href+'servicio/soap?wsdl</a></hgroup>';
+    window.onload = function() {
+      // Begin Swagger UI call region
+      const ui = SwaggerUIBundle({
+        url:  window.location.href+"api/swagger.json",
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout"
+      })
+      // End Swagger UI call region
+      
+      
+ var title = window.location.pathname;
+    title = replaceAll(title, "/","");
+    
+    document.title = title;
+      window.ui = ui
+      
+      loadPage();     
+    }
+   
+    function replaceAll(string, search, replace) {
+    	  return string.split(search).join(replace);
+    	}
+    
+    function loadPage(){
+    	$.ajax({
+    	    url: "java.jsp",
+    	    type: "get",
+    	    dataType: "json",
+    	    cache: false,
+    	    contentType: false,
+    	    processData: false
+    	})
+    	    .done(function(res){
+    	        if(res != null && res.isSoap == 'true'){
+    	        	 $( "#dialog" ).html(servicioWsdl);
+    	        	 $( "#dialog" ).dialog({
+    	        		 autoOpen: true,
+    	        		    modal: false,
+    	        		    height: "auto",
+    	        		    width: "auto",
+    	        		    resizable: false,
+    	        		    open: function(event, ui) {   // It'll hide Close button
+    	        		        $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
+    	        		    },
+    	        		    closeOnEscape: false,        // Do not close dialog on press Esc button
+    	        		    show: {
+    	        		        effect: "clip",
+    	        		        duration: 500
+    	        		    },
+    	        		    hide: {
+    	        		        effect: "blind",
+    	        		        duration: 200
+    	        		    }
+    	        	 });
+    	        }
+    	    });
+    }
+    
+    
+  </script>
+  </body>
+
+</html>
